@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wedai — Jouw slimme trouwplanner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #C9A96E;
+  --dark: #1A1714;
+  --cream: #FAF7F2;
+  --muted: #8C8278;
+  --surface: #FFFFFF;
+  --border: rgba(201,169,110,0.2);
+  --text: #1A1714;
+  --text-muted: #8C8278;
+  --bg: #F7F4EF;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 0 4rem;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* NAV */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+
+.nav-logo span { color: var(--gold); }
+
+.days-badge {
+  font-size: 12px;
+  color: var(--gold);
+  border: 1px solid rgba(201,169,110,0.35);
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: none;
+}
+
+/* LANDING */
+.landing-hero {
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1.12;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+}
+
+.hero-title em { font-style: italic; color: var(--gold); }
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 380px;
+  margin: 0 auto 2.5rem;
+  font-weight: 300;
+}
+
+.features-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 2rem 2rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.feature-pill {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.feature-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 1.5rem;
+  padding: 1.75rem;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 1.75rem;
+  line-height: 1.25;
+}
+
+/* STEPS */
+.step-dots {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.75rem;
+}
+
+.dot {
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+
+.dot.active { background: var(--gold); }
+
+/* FORM */
+.form-group { margin-bottom: 1.25rem; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 7px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E0DAD2;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.1); }
+
+.name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+.option-btn {
+  padding: 11px 10px;
+  border: 1px solid #E0DAD2;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  background: var(--surface);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.3;
+}
+
+.option-btn:hover { border-color: var(--gold); color: var(--text); }
+.option-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.06); font-weight: 500; }
+
+/* BUTTONS */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: var(--dark);
+  color: var(--cream);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.04em;
+  margin-top: 0.5rem;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:active { transform: scale(0.99); }
+.btn-primary:disabled { opacity: 0.35; cursor: default; }
+
+.btn-ghost {
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid #E0DAD2;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+
+.btn-row { display: flex; gap: 10px; margin-top: 0.5rem; }
+.btn-row .btn-primary { flex: 1; margin-top: 0; }
+
+/* LOADING */
+.loading-screen {
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.loading-ring {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.loading-sub { font-size: 13px; color: var(--text-muted); }
+
+/* DASHBOARD */
+.dash-grid {
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.dash-card-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.ai-response {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  font-weight: 300;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+  align-items: flex-start;
+}
+
+.timeline-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.timeline-month {
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 500;
+  min-width: 52px;
+  padding-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+.timeline-task { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.4; }
+.timeline-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.vendor-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+}
+
+.vendor-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.vendor-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(201,169,110,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--gold);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.vendor-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.vendor-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+.vendor-price { font-size: 12px; color: var(--gold); margin-left: auto; white-space: nowrap; font-weight: 500; }
+
+/* CHAT */
+.chat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.chat-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 1rem 1.5rem 0;
+}
+
+.chat-messages {
+  padding: 1rem 1.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 88%;
+}
+
+.msg-user {
+  background: #F0EBE3;
+  color: var(--text);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-ai {
+  background: rgba(201,169,110,0.08);
+  border: 1px solid rgba(201,169,110,0.2);
+  color: var(--text);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  outline: none;
+}
+
+.chat-input::placeholder { color: var(--text-muted); }
+
+.chat-send {
+  padding: 12px 20px;
+  background: var(--dark);
+  color: var(--cream);
+  border: none;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  letter-spacing: 0.03em;
+}
+
+.chat-send:hover { opacity: 0.8; }
+.chat-send:disabled { opacity: 0.35; cursor: default; }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 420px) {
+  .hero-title { font-size: 36px; }
+  .name-row { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <nav class="nav">
+    <div class="nav-logo">Wed<span>ai</span></div>
+    <div class="days-badge" id="days-badge"></div>
+  </nav>
+
+  <!-- LANDING -->
+  <div class="screen active" id="screen-landing">
+    <div class="landing-hero">
+      <div class="hero-eyebrow">Slimme trouwplanning voor België</div>
+      <h1 class="hero-title">Jouw perfecte dag,<br><em>zonder de chaos.</em></h1>
+      <p class="hero-sub">Van feestzaal tot fotograaf — wij plannen alles voor jullie. Persoonlijk, slim en volledig in jouw taal.</p>
+      <button class="btn-primary" style="max-width:260px;margin:0 auto;display:block;" onclick="showScreen('screen-step1')">Begin je planning &rarr;</button>
+    </div>
+    <div class="features-row">
+      <span class="feature-pill"><span class="feature-dot"></span>AI trouwplanner</span>
+      <span class="feature-pill"><span class="feature-dot"></span>Lokale vendors België</span>
+      <span class="feature-pill"><span class="feature-dot"></span>Budget beheer</span>
+      <span class="feature-pill"><span class="feature-dot"></span>Dag-timeline</span>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="screen" id="screen-step1">
+    <div class="card">
+      <div class="step-dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="section-label">Stap 1 van 3</div>
+      <h2 class="section-title">Vertel ons over jullie</h2>
+      <div class="name-row">
+        <div class="form-group">
+          <label class="form-label">Jouw naam</label>
+          <input class="form-input" type="text" placeholder="Emma" id="name1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Partner naam</label>
+          <input class="form-input" type="text" placeholder="Luca" id="name2" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Trouwdatum</label>
+        <input class="form-input" type="date" id="wedding-date" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stad of gemeente</label>
+        <input class="form-input" type="text" placeholder="Antwerpen, Gent, Brussel..." id="city" />
+      </div>
+      <button class="btn-primary" onclick="goStep2()">Volgende &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="screen" id="screen-step2">
+    <div class="card">
+      <div class="step-dots">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div>
+      </div>
+      <div class="section-label">Stap 2 van 3</div>
+      <h2 class="section-title">Budget & gasten</h2>
+      <div class="form-group">
+        <label class="form-label">Totaal budget</label>
+        <div class="grid-2">
+          <div class="option-btn" onclick="selectOpt(this,'budget','&lt; €10.000')">Minder dan €10k</div>
+          <div class="option-btn" onclick="selectOpt(this,'budget','€10.000 – €20.000')">€10k – €20k</div>
+          <div class="option-btn" onclick="selectOpt(this,'budget','€20.000 – €35.000')">€20k – €35k</div>
+          <div class="option-btn" onclick="selectOpt(this,'budget','€35.000+')">€35k of meer</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Aantal gasten</label>
+        <input class="form-input" type="number" placeholder="80" id="guests" min="10" max="500" />
+      </div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="showScreen('screen-step1')">Terug</button>
+        <button class="btn-primary" onclick="goStep3()">Volgende &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="screen" id="screen-step3">
+    <div class="card">
+      <div class="step-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot active"></div>
+      </div>
+      <div class="section-label">Stap 3 van 3</div>
+      <h2 class="section-title">Jullie stijl</h2>
+      <div class="form-group">
+        <label class="form-label">Welke sfeer past bij jullie?</label>
+        <div class="grid-3">
+          <div class="option-btn" onclick="selectOpt(this,'style','Romantisch & klassiek')">Romantisch</div>
+          <div class="option-btn" onclick="selectOpt(this,'style','Modern & minimaal')">Modern</div>
+          <div class="option-btn" onclick="selectOpt(this,'style','Boho & natuur')">Boho</div>
+          <div class="option-btn" onclick="selectOpt(this,'style','Luxe & glamour')">Luxe</div>
+          <div class="option-btn" onclick="selectOpt(this,'style','Rustic & landelijk')">Rustic</div>
+          <div class="option-btn" onclick="selectOpt(this,'style','Speels & creatief')">Speels</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Iets speciaals? <span style="color:var(--text-muted);font-weight:300;">(optioneel)</span></label>
+        <input class="form-input" type="text" placeholder="Bijv. buitentrouwerij, religieuze ceremonie..." id="special" />
+      </div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="showScreen('screen-step2')">Terug</button>
+        <button class="btn-primary" onclick="generatePlan()">Maak mijn planning &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="loading-ring"></div>
+      <div class="loading-title">Jouw planning wordt opgesteld...</div>
+      <div class="loading-sub">AI analyseert jullie wensen</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="screen" id="screen-dashboard">
+    <div class="dash-grid" style="padding-top:1.5rem;">
+
+      <div class="dash-card">
+        <div class="dash-card-label">Jouw persoonlijke planning</div>
+        <div class="ai-response" id="ai-plan-text"></div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-label">Tijdlijn</div>
+        <div id="timeline-list"></div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-label">Aanbevolen vendors</div>
+        <div id="vendor-list"></div>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-label">Stel een vraag aan Wedai</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" type="text" id="chat-input" placeholder="Bijv. wat moet ik eerst boeken?" onkeydown="if(event.key==='Enter')sendChat()" />
+          <button class="chat-send" id="chat-send-btn" onclick="sendChat()">Stuur</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Wedai &mdash; België &copy; 2026</div>
+
+<script>
+const data = { name1:'', name2:'', date:'', city:'', budget:'', guests:'', style:'', special:'' };
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function selectOpt(el, field, val) {
+  el.closest('.grid-2, .grid-3').querySelectorAll('.option-btn').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  data[field] = val;
+}
+
+function goStep2() {
+  data.name1 = document.getElementById('name1').value.trim() || 'Partner 1';
+  data.name2 = document.getElementById('name2').value.trim() || 'Partner 2';
+  data.date = document.getElementById('wedding-date').value;
+  data.city = document.getElementById('city').value.trim() || 'België';
+  showScreen('screen-step2');
+}
+
+function goStep3() {
+  data.guests = document.getElementById('guests').value || '80';
+  showScreen('screen-step3');
+}
+
+function daysUntil(d) {
+  if (!d) return null;
+  return Math.ceil((new Date(d) - new Date()) / 86400000);
+}
+
+function monthsUntil(d) {
+  const days = daysUntil(d);
+  if (!days) return 12;
+  return Math.max(1, Math.round(days / 30));
+}
+
+const vendors = [
+  { name:'Studio Blanc', type:'Fotografie', price:'€2.200–€3.800', city:'Antwerpen' },
+  { name:'Domein De Linde', type:'Feestzaal', price:'€3.500–€6.000', city:'Gent' },
+  { name:'Fleur & Co.', type:'Bloemist', price:'€800–€1.800', city:'Brussel' },
+  { name:'Golden Table', type:'Catering', price:'€65–€95 p.p.', city:'Leuven' },
+  { name:'Melodie Events', type:'DJ & muziek', price:'€900–€1.500', city:'Hasselt' },
+];
+
+async function generatePlan() {
+  data.special = document.getElementById('special').value.trim();
+  showScreen('screen-loading');
+
+  const months = monthsUntil(data.date);
+  const days = daysUntil(data.date);
+
+  if (days) {
+    const badge = document.getElementById('days-badge');
+    badge.textContent = days + ' dagen';
+    badge.style.display = 'block';
+  }
+
+  const prompt = `Je bent Wedai, een vriendelijke Belgische AI trouwplanner. Schrijf een korte, persoonlijke planning in het Nederlands voor ${data.name1} & ${data.name2} die trouwen in ${data.city} over ${months} maanden (${days || '?'} dagen). Budget: ${data.budget || 'niet opgegeven'}. Gasten: ${data.guests}. Stijl: ${data.style || 'niet opgegeven'}. ${data.special ? 'Extra info: ' + data.special : ''}
+
+Schrijf 3-4 zinnen als lopende tekst: warme begroeting, de belangrijkste prioriteiten voor nu, en 1 concrete tip. Geen opsomming, geen titels.`;
+
+  try {
+    const res = await fetch('/.netlify/functions/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const json = await res.json();
+    document.getElementById('ai-plan-text').textContent =
+      json.content?.map(b => b.text || '').join('') || 'Er ging iets mis. Probeer opnieuw.';
+  } catch(e) {
+    document.getElementById('ai-plan-text').textContent = 'Verbindingsfout. Controleer je internetverbinding.';
+  }
+
+  const m = months;
+  const timelineItems = [];
+  if (m >= 10) timelineItems.push({ month:'Nu', task:'Feestzaal reserveren', sub:'Zalen zijn 1–2 jaar op voorhand volgeboekt' });
+  if (m >= 8) timelineItems.push({ month: m-2+'m', task:'Fotograaf boeken', sub:'Vergelijk 3–5 portfolio\'s' });
+  if (m >= 5) timelineItems.push({ month: m-4+'m', task:'Catering & menu', sub:'Proefavond inplannen' });
+  timelineItems.push({ month:'2m', task:'Definitieve gastenlijst', sub:'Tafelplan opmaken' });
+  timelineItems.push({ month:'1m', task:'Laatste details afronden', sub:'Ringen, ceremonie repetitie' });
+
+  document.getElementById('timeline-list').innerHTML = timelineItems.map(i =>
+    `<div class="timeline-item">
+      <div class="timeline-month">${i.month}</div>
+      <div><div class="timeline-task">${i.task}</div><div class="timeline-sub">${i.sub}</div></div>
+    </div>`
+  ).join('');
+
+  document.getElementById('vendor-list').innerHTML = vendors.slice(0,4).map(v =>
+    `<div class="vendor-item">
+      <div class="vendor-avatar">${v.name[0]}</div>
+      <div>
+        <div class="vendor-name">${v.name}</div>
+        <div class="vendor-meta">${v.type} &middot; ${v.city}</div>
+      </div>
+      <div class="vendor-price">${v.price}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('chat-messages').innerHTML =
+    `<div class="msg msg-ai">Hoi ${data.name1}! Je planning staat klaar. Stel me gerust vragen — ik ben Wedai, jouw persoonlijke trouwplanner.</div>`;
+
+  showScreen('screen-dashboard');
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const btn = document.getElementById('chat-send-btn');
+  const msg = input.value.trim();
+  if (!msg || btn.disabled) return;
+
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML += `<div class="msg msg-user">${msg}</div>`;
+  input.value = '';
+  btn.disabled = true;
+
+  const thinking = document.createElement('div');
+  thinking.className = 'msg msg-ai';
+  thinking.textContent = '...';
+  msgs.appendChild(thinking);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  const ctx = `Je bent Wedai, een Belgische AI trouwplanner voor ${data.name1} & ${data.name2}. Trouwdatum: ${data.date || 'onbekend'}. Stad: ${data.city}. Budget: ${data.budget}. Gasten: ${data.guests}. Stijl: ${data.style}. Geef een kort, praktisch antwoord in het Nederlands. Max 2-3 zinnen.`;
+
+  try {
+    const res = await fetch('/.netlify/functions/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role:'user', content: ctx + '\n\nVraag van het koppel: ' + msg }]
+      })
+    });
+    const json = await res.json();
+    thinking.textContent = json.content?.map(b => b.text||'').join('') || 'Even geen antwoord beschikbaar.';
+  } catch(e) {
+    thinking.textContent = 'Verbindingsfout. Probeer opnieuw.';
+  }
+
+  btn.disabled = false;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+</body>
+</html>
