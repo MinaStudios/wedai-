@@ -949,7 +949,7 @@ async function generatePlan() {
 
   const prompt = `Je bent Wedai, een vriendelijke Belgische AI trouwplanner. Schrijf een korte, persoonlijke planning in het Nederlands voor ${data.name1} & ${data.name2} die trouwen in ${data.city} over ${months} maanden (${days || '?'} dagen). Budget: ${data.budget || 'niet opgegeven'}. Gasten: ${data.guests}. Stijl: ${data.style || 'niet opgegeven'}. ${data.special ? 'Extra info: ' + data.special : ''}
 
-Schrijf 3-4 zinnen als lopende tekst: warme begroeting, de belangrijkste prioriteiten voor nu, en 1 concrete tip. Geen opsomming, geen titels.`;
+Schrijf exact 2 zinnen: 1 warme begroeting met de belangrijkste prioriteit voor nu, en 1 concrete tip. Kort, direct, geen opsomming.`;
 
   try {
     const res = await fetch('/.netlify/functions/claude', {
@@ -1048,7 +1048,7 @@ async function sendChat() {
   msgs.appendChild(thinking);
   msgs.scrollTop = msgs.scrollHeight;
 
-  const ctx = `Je bent Wedai, een Belgische AI trouwplanner voor ${data.name1} & ${data.name2}. Trouwdatum: ${data.date || 'onbekend'}. Stad: ${data.city}. Budget: ${data.budget}. Gasten: ${data.guests}. Stijl: ${data.style}. Geef een kort, praktisch antwoord in het Nederlands. Max 2-3 zinnen.`;
+  const ctx = `Je bent Wedai, een Belgische AI trouwplanner voor ${data.name1} & ${data.name2}. Trouwdatum: ${data.date || 'onbekend'}. Stad: ${data.city}. Budget: ${data.budget}. Gasten: ${data.guests}. Stijl: ${data.style}. Geef een antwoord in max 1-2 korte zinnen. Direct en praktisch, geen uitleg.`;
 
   try {
     const res = await fetch('/.netlify/functions/claude', {
